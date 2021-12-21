@@ -1,0 +1,857 @@
+---
+title: "Poslovna analitika - uvod u Rstudio"
+author: Katarina Kostelić
+date: 12/2021
+output:
+  pdf_document: default
+  html_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+---
+**RStudio**
+---
+
+R je programski jezik za statističku obradu i vizualizaciju podataka. Često se upotrebljava zbog toga što sadrži već ugrađene pakete za statističku analizu podataka. Također, moguće je nadograđivati pakete, ali i samostalno kreirati vlastite funkcije i objekte, pa čak i pakete.
+Potrebno je prvo instalirati R na računalo, a potom RStudio. Instalacija RStudia može se provesti na dva načina – preuzimanjem datoteke s mrežne stranice ili iz R-a (potreban je paket devtools). 
+Jedna od prednosti R-a jest što se radi o besplatnom, open source softverskom okruženju, zbog čega je njegova upotreba raširena, a brojni primjeri upotrebe pojedinih paketa mogu se naći u pratećoj dokumentaciji tih paketa (dostupnoj online i preko Help opcije), online forumima te GitHubu. Pritom je CRAN (The Comprehensve R Archive Network) osnovna mrežna stranica koja funkcionira kao repozitorij sustava R, paketa i dokumentacije.
+
+Iako ste se već sigurno susreli s upotrebom R-a, ovdje ćemo ponoviti neke osnovne pojmove i funkcije. U ovom uvodu, podsjetit ćete se osnovnih struktura podataka, definiranja tih struktura te odabiranja, dodavanja i brisanja elemenata iz različitih vrsta struktura podataka. Navedeno su osnove koje ćete kasnije (uz neke funkcije koje ćete savladati naknadno) koristiti tijekom pripreme podataka za analizu. Za početak, upoznat ćete se s osnovama rada u RStudiu.
+
+Gore lijevo: Script/ Source
+Gore desno: Environment
+Dolje lijevo: Console
+Dolje desno: Files/ Plots/ Packages/Help/ Viewer
+
+Gore lijevo prikazuju se zadane naredbe, ako je prethodno otvoren novi **R script** (skripta) ili korištene datoteke i objekti uz naredbu **view()** ili klik na datoteke/objekte u prozoru Environment. Skripta može sadržavati jednu ili niz povezanih naredbi, a naredba ili skup naredbi pokreću se klikom na Run. S obzirom da je R izuzetno osjetljiv na korištenu sintaksu (velika i mala slova, tipfelere, otvaranje i zatvaranje zagrada i dr.), korištenje skripte često predstavlja uštedu vremena. Prvo, nakon upisane naredbe uz pripadajući broj retka uz naredbu prikazat će se crveni kružić s ili bez x-a ukoliko ta naredba sadrži grešku. Drugo, čak ako se naredba primijeni, a obavijest o grešci prikaže u konzoli, neće biti potrebno pretipkavanje čitave naredbe, nego samo korekcija u skripti. 
+**Environment** predstavlja radno okruženje te se tu nalaze svi korišteni objekti (učitani **data frame** (podatkovni okvir),  funkcije, varijable, itd.) u pojedinoj sesiji.
+**Console** ili konzola prikazuje izvršene naredbe. Naredbe se mogu upisivati i direktno u konzolu. Druga, preferirana mogućnost, je upisivati naredbe u skriptu, pri čemu će se one prikazati u konzoli tek nakon što se te naredbe izvrše (Run ili Ctrl+Enter).   
+U donjem desnom prozoru na početku svake sesije bit će prikazane datoteke (**Files**). Moguće ih je učitati direktno, klikom na datoteku te odabirom Import data. Nakon što su učitane, datoteke će biti pripisane objektu (najčešće je to data frame) koji će se pojaviti u prozoru Environment. Prikazane datoteke (Files) su one koje se nalaze u radnom direktoriju, default je mapa Dokumenti. Provjera koja se mapa koristi kao radni direktorij vrši se putem **getwd()**. Ukoliko se radni direktorij želi promijeniti, to je moguće učiniti pomoću **setwd()**. Prikaz donjeg desnog prozora moguće je promijeniti odabirom Plots, Packages, Help ili Viewer. **Plots** prikazuje kreirane grafičke prikaze. **Packages** prikazuje popis dostupnih paketa. Paketi se mogu pozvati iz skripte ili konzole s naredbom **library()** ili klikom uz željeni paket na popisu Packages. **Help** nudi prikaz dokumentacije vezane uz pakete i/ili naredbe. Taj je prikaz izuzetno koristan, osobito pri korištenju novih naredbi ili pri podsjećanju kako naredbu treba zadati (ili kako točno naredba glasi) jer daje uvid u elemente koje pojedina naredba sadržava, uz mogućnosti i primjere upisa te rezultat/output s obzirom na zadane elemente. **Viewer** će prikazati lokalni sadržaj vezan uz korištenje mrežnih resursa (npr. izrada interaktivnog html grafičkog prikaza, iteracije pri simulacijama uz distribuciju upotrebe jezgri i radne memorije i sl.).
+Pri radu u R-u jedan od jednostavnijih pristupa je kreiranje dokumenta R projekta (**R project**) na početku rada na pojedinom predmetu (File-> New Project->New Directory->New Project te upišete naziv novog projekta; alternativno, u gornjem desnom uglu kliknete na dodavanje novog projekta). Na taj način kreira se novo radno okruženje. Ako radite na više predmeta istovremeno i želite svaki  od njih sačuvati kako bi se kasnije mogli vratiti radu ili pregledu svakog od njih, korištenje ove opcije će to olakšati. Naime, pojedinom projektu pristupate putem opcije Open project, a ukoliko ste sve spremili prije posljednjeg zatvaranja, možete nastaviti rad na tom predmetu/projektu, bez da morate počinjati ispočetka svaki sljedeći put. Osim toga, to je korisno, zato jer ćete ponekad htjeti koristiti dijelove koda/ naredbi koje ste koristili ranije, a ova opcija to olakšava.
+Skripta se može spremiti u obliku zasebnog dokumenta, **R script**. Ako želite upisati komentare, kao podsjetnik čemu pojedina naredba služi ili objašnjenje skupa naredbi, ispred tih komentara potrebno je upisati **#**. Tako spremljena datoteka, može se ponovo koristiti, dorađivati i/ili ispravljati. 
+Osim skripte, moguće je koristiti R datoteku **R Markdown**. Ova je opcija korisna pri izradi izvješća. R Markdown može sadržavati kombinaciju koda, teksta i rezultata, a moguće je kreirati izlazne datoteke HTML-a, PDF-a li Word-a (pomoću klika na **Knit** u alatnoj traci prozora Source). Osim navedene kombinacije upotrebe teksta, koda i rezultata, u R Markdownu, naredbe se, u pravilu, pišu i izvršavaju u blokovima (klik na ikonu +c za dodavanje bloka koda). Moguće je umjereno uređivanje teksta. Na primjer, # ispred teksta na početku reda označit će tekst kao naslov poglavlja; tekst između *dviju zvjezdica* bit će označen ukošeno (Italics), a tekst između **dvostrukih zvjezdica** podebljano (Bold). 
+
+Pri radu u R-u, u pravilu, koriste se paketi. **Paketi** predstavljaju grupirane funkcionalnosti R-a. Svaki paket sastoji se od kompiliranog koda i skupa funkcija (ili skupina funkcija). Primjena pojedinog paketa najčešće je vezana za točno određeni, definirani format podataka. Zato je prateća dokumentacija izuzetno važna i treba steći naviku iščitavanja prateće dokumentacije. Odabirom **Packages** u donjem desnom prozoru, prikazat će se popis svih osnovnih paketa koji su već instalirani. Ako se želi koristiti neki od paketa koji se ne nalaze na tom popisu, potrebno ih je prvo instalirati. To se radi naredbom **install.packages()**, npr. install.packages(„tidyverse“). Da bi se paket aktivirao, potrebno ga je pozvati pomoću **library()**, npr. library(tidyverse) ili klikom na kućicu pored paketa nakon što se naziv pojavi na popisu. Prateću dokumentaciju moguće je provjeriti na dva načina. Prvi je način kliknuti na **Help**, i u polje za pretragu utipkati naziv paketa. Drugi način je upotreba naredbe library(help=“tidyverse“). Postoje tisuće dostupnih paketa i njihov broj raste. Grupirane pakete po temama (područjima primjene/metodama) moguće je naći na: https://cran.r-project.org/web/views/. Osim toga, neki su paketi deponirani na GitHubu, a ukoliko se radi o povjerljivim korisnicima, tako pohranjen paket možete preuzeti koristeći devtools i naredbu devtools::install_github(). 
+
+---
+**Osnovni tipovi podataka**
+---
+
+```{r, echo=FALSE}
+x <- c("double",	"1, 2.33, 50.99, 3e10",	"realni brojevi",
+                "integer",	"5l, -2, 5387l",	"cjelobrojni brojevi",
+                "character",	"slova, oznake, 50 %, pa}",	"znakovni tip",
+                "logical",	"TRUE, FALSE, T, F",	"logički",
+                "complex",	"1+5i, 5-2i", "kompleksni brojevi",
+                "raw",	"as.raw(11)",	"sirovi")
+
+Tablica <- matrix(x, nrow=6, ncol=3, byrow=TRUE)
+colnames(Tablica)<-c("Naziv",	"Primjer", "Vrsta")
+rownames(Tablica)<-c("1.","2.","3.","4.","5.","6.")
+T<-as.table(Tablica)
+T
+```
+
+Posljednje dvije vrste koriste se vrlo rijetko. Provjera vrste podataka može se izvršiti pomoću **typeof()**, ili funkcijama **is** (is.integer(), is.character(), itd.) typeof() naredba povratno daje naziv tipa podataka (double, integer, itd.), dok je naredba koja sadrži is logička i povratno daje TRUE ili FALSE. Tip podataka moguće je promijeniti funkcijom koja sadrži **as** (as.integer(), as.double(), as.character(), itd.). Ipak, preporučuje se ne koristiti promjenu tipa podataka prije nego se izvrši detaljni uvid u podatke. Naime, može se dogoditi (i događa se) da niz podataka sadrži pogrešno zapisane vrijednosti, na primjer, pojavljuje se „o“ na mjestu gdje bi trebala biti „0“, pa je tip podataka identificiran kao character umjesto integer li double. Sama promjena tipa podataka neće riješiti ovaj problem, nego podatke treba provjeriti i urediti prije takve promjene.
+
+---
+***Kreiranje varijabli***
+---
+
+Iako će se najčešće koristiti varijable iz učitanog data framea, korisno je znati da se varijable mogu i izraditi pridruživanjem vrijednosti. Na primjer, ako se želi kreirati varijabla a koja sadrži vrijednost 1, to je moguće napraviti na sljedeći način: 
+
+```{r}
+a <- 1
+a
+```
+Iako je kreiranje varijabli korisno, podatke je češće nužno i važnije definirati s obzirom na njihovu strukturu. Sjetite se i napomene kod programskih paketa, često će programski paketi iziskivati točno određen tip i strukturu podataka.
+
+---
+***Kreiranje vektora***
+---
+
+**Vektor** je uređeni niz koji nastaje pridruživanjem elemenata. *Uređeni niz* znači da je redno mjesto elementa fiksno i da se pozivom određenog rednog mjesta element može identificirati. Nadalje, važno je znati da elementi moraju biti *istog tipa*. Ako elementi nisu istog tipa, tada se radi o listi (više o tome kasnije), a ne vektoru. Elementi se pridružuju vektoru koristeći funkciju combine, **c()**. 
+Primjer kreiranja vektora:
+
+```{r}
+a <- c(1,2,3,4,5)
+b<-c(5,10,15,20,25)
+c<-c("Pula", "Rijeka", "Zagreb", "Osijek","Split")
+d<-c("Iva","Ana","Maja","Marko","Ivan")
+e<-c(TRUE,TRUE,TRUE,FALSE,FALSE)
+```
+
+
+Ispis vektora vrši se upisom naziva vektora ili pomoću funkcije print().
+
+```{r}
+print(a)
+
+```
+```{r}
+b
+```
+```{r}
+c
+```
+```{r}
+print(d)
+```
+```{r}
+e
+```
+Ponekad je potrebno kreirati duži vektor, pa čak i uz neke specifične karakteristike, te bi ručni upis bio prezahtjevan. Tada su sljedeće mogućnosti vrlo korisne.
+
+```{r}
+f <- 100:200
+f
+```
+
+Prethodnom naredbom kreira se vektor koji sadrži sve cjelobrojne vrijednosti između 100 i 200, uključujući 100 i 200.
+
+```{r}
+g<-seq(1, 200, by=3)
+g
+```
+
+Prethodnom funkcijom generiran je vektor g, kojemu je prva vrijednost 1, a svaka sljedeća vrijednost je treća po redu, do 200.
+
+```{r}
+h<-rep(c(1, 5, 10), times=2)
+h
+```
+
+Prethodnom funkcijom kreiran je vektor temeljem replikacije zadanog vektora, na način da se ponavlja dva puta. Umjesto times=2, moguće je koristiti, na primjer, **each=**2, pri čemu se svaka vrijednost ponavlja dva puta (1, 1, 5, 5, 10, 10), ili npr. **length.out=**7, pri čemu kreira vektor duljine 7 na način da se niz vrijednosti ponavlja dok se ne dosegne sedam elemenata. Isprobajte sami.
+Vektori se mogu i spojiti, a rezultat će predstavljati jedan niz podataka, pri čemu redoslijed vektora uvjetuje redoslijed podataka u nizu. Za spajanje vektora također se koristi **c()**.
+
+```{r}
+i <- c(a,b)
+i
+```
+```{r}
+j <- c(b,a)
+j
+```
+Obratite pozornost na to da vektori *i* i *j* nisu jednaki.
+Također, vektori se mogu sastojati od elemenata tipa character, na primjer:
+
+```{r}
+k <- c(c,d)
+k
+```
+Ako je elemente vektora potrebno sortirati, oristi se funkcija **sort()**. U specifičnim situacijama u kojima nam je važno znati na kojim se pozicijama nalaze elementi s obzirom na svoju vrijednost, može pomoći funkcija **order()**. Ova funkcija neće posložiti elemente redom (sjetite se da je vektor uređeni niz podataka), nego će vratiti niz rednih mjesta koje bi elementi trebali zauzeti ako bi bili poredani po veličini.
+
+```{r}
+ord<-order(j)
+ord
+```
+Na taj način dobivamo novi vektor koji daje redoslijed elemenata prema veličini vrijednosti elementa. Funkcija sort učinit će ono što njezin naziv govori, sortirat će podatke. Vodite računa o tome da, ako upišete npr. sort(j), elementi vektora *j* bit će ispisani redosljedno, ali samo ispisani - neće biti sačuvani. Ako želite sačuvati sortirane elemente vektora, onda morate te elemente pripisati novom objektu, tj. vektoru. Sličan se pristup koristi svugdje u ovoj lekciji. Ipak, vidjet ćete naknadno, da neće biti potrebno uvijek koristiti ovaj pristup, a ponekad je i nepoželjno zbog kreiranje velikog broja varijabli s kojima se kasnije teško snaći.
+
+```{r}
+j_sort<-sort(j)
+j_sort
+```
+Za ispitivanje **tipa vektora** također se može koristiti typeof(). U slučaju kombinacije elemenata različitih tipova, tip vektora preuzet će tzv. jači tip podataka, pri čemu je odnos tipova podataka: **logical -> integer -> double -> character**. Što to znači? Na primjer, ako niz podataka sadrži makar jednu character vrijednost, tada će tip tog niza podataka poprimiti tip character.
+
+```{r}
+typeof(a)
+```
+```{r}
+typeof(k)
+```
+```{r}
+#y<-a+k
+#typeof(k)
+```
+
+Pod **dodavanjem atributa** najčešće se misli na dodavanje naziva strupcima i retcima (zaglavlja i predstupci u tablicama). 
+Na primjer, ako je zadan vektor
+
+```{r}
+l <- c("Poslovna analitika", 6, 2, 1, 1, "T")
+length(l)
+```
+elementima vektora mogu se pridružiti nazivi:
+```{r}
+names(l) <- c("kolegij", "ECTS", "Sati predavanja", "Sati vježbi", "Sati seminara", "Obavezan")
+```
+
+```{r, echo=FALSE}
+attr(l, "studij") <-NULL
+```
+
+provjerite kako sad izgleda vektor l.
+```{r}
+l
+```
+
+Duljina vektora ispituje se pomoću **length()**. Ako ispitate duljinu vektora l prije i nakon dodavanja naziva, vidjet ćete da se duljina vektora nije promijenila. 
+
+```{r}
+length(l)
+```
+Ako se osim naziva dodaju bilo kakvi dodatni atributi, tada više neće biti prepoznat kao vektor (ako provjeravate npr. funkcijom is.vector()). Ipak, moguće je dodavati i dodatne atribute, ako za to postoji opravdani razlog i ako za daljnju analizu nije nužno da niz bude prepoznat kao vektor. Tada se to čini funkcijom **attr()**.
+
+```{r}
+attr(l, "studij") <- "Informatički menadžment"
+l
+```
+
+
+Također, ponekad je potrebno odabrati pojedini element vektora, uobičajeno se to čini s [ ]. Na primjer:
+
+```{r}
+a[1]
+```
+selektira element koji se nalazi na prvom mjestu u vektoru a, ili na primjer,
+```{r}
+i[7]
+```
+selektira element koji se nalazi na 7 mjestu u vektoru *i*.
+Moguće je odabrati i nekoliko elemenata istovremeno, na primjer:
+```{r}
+j[c(2, 5, 8)]
+```
+odnosno elemente na drugom, petom i osmom mjestu u vektoru *j*. Nadalje,
+```{r}
+j[3:7]
+```
+odabire sve elemente koje se nalaze na mjestima od trećeg do sedmog, uključujući elemente ne trećem i sedmom mjestu. Osim toga, može se koristiti i funkcija seq(), na primjer:
+```{r}
+j[seq(1, 10, by=2)]
+```
+Osim provjere, to jest, odabira pojedinih elemenata vektora, ponekad je potrebno **zamijeniti** određene **vrijednosti**. Na primjer, neka je zadan vektor *m*,
+```{r}
+m <- c(2, 20, 3, 5, "o", 6, "k", 10, 35, 22)
+typeof(m)
+```
+Vektor *m* je trenutno tipa character, možete provjeriti i s is.character(m). Ako je za daljnju obradu potrebno da vektor bude definiran kao integer ili double, može se uočiti da elementi o i k priječe u tome da vektor bude tako identificiran. Može se pretpostaviti da je umjesto „o“ trebala biti zapisana nula, pa se može izvršiti **zamjena elementa**:
+```{r}
+m[5] <- 0
+m
+```
+Za element „k“ ne može se pretpostaviti koji je broj trebao zamijeniti, pa je jedna od mogućnosti **brisanje elementa**:
+```{r}
+m <-m[-7]
+m
+```
+Drugi način brisanja elementa je m[[7]] <- NULL.
+Obratite pozornost da se nakon ove operacije mijenja duljina vektora, length(m).
+Na vektorima je moguće vršiti određene **operacije**, na primjer:
+```{r}
+#vektor a zabilježen je kao objekt i nalazi se u gornjem desnom prozoru, Environment. Tamo možete provjeriti koje elemente sadrži vektor a, kako bi popratisli sljedeći niz operacija. 
+a*3
+```
+```{r}
+a+5
+```
+```{r}
+a^2
+```
+```{r}
+a*2+3
+```
+```{r}
+a*(2+3)
+```
+```{r}
+a*b
+```
+```{r}
+a+b
+```
+Za vektore je moguće izračunati i neke osnovne statističke podatke, koristeći fivenum() (Tuckeyevih pet brojeva), sum(), min(), max(), mean().
+```{r}
+fivenum(j)
+```
+```{r}
+min(j)
+```
+```{r}
+max(j)
+```
+```{r}
+mean(j)
+```
+```{r}
+median(j)
+```
+```{r}
+sum(j)
+```
+Nadalje, moguće je vršiti neke računske operacije čak i *ako vektori nisu jednakih duljina*, na primjer:
+```{r}
+j+a
+```
+```{r}
+j*a
+```
+```{r}
+j/a
+```
+a proces kojim se to postiže je tzv. **recikliranje**, pri čemu se redoslijedno ponavljaju elementi kraćeg vektora dok se ne izvrši računska operacija s posljednjim elementom duljeg vektora.
+Nadalje, vektore je moguće **uspoređivati**, pri čemu će izlaz predstavljati niz elemenata logičkog tipa, na primjer:
+```{r}
+a>j
+```
+```{r}
+j != a
+```
+```{r}
+a ==j
+```
+Na vektorima je moguće vršiti i **logičke upite** te na taj način odabirati elemente. Na primjer,
+```{r}
+d[e]
+```
+
+```{r}
+b>3
+```
+```{r}
+b[b>3]
+```
+```{r}
+n <- c(TRUE,FALSE,FALSE)
+i[n]
+```
+ovaj posljednji primjer, osim logičkog upita, koristi i princip recikliranja, a rezultat je svaki treći element vektora *i*.
+Prije nego nastavite, obratite pozornost na Environment. Svi kreirani objekti, nalaze se na popisu, uz navođenje tipa, duljine i ispis prvih nekoliko elemenata.
+
+---
+**Kreiranje matrice**
+---
+
+Matrice su **dvodimenzionalni vektori** (dakle, vrijede isti uvjeti kao i za vektore), a mogu se kreirati na više načina. Matricu je uobičajeno definirati koristeći funkciju **matrix()**, u kojoj je potrebno navesti podatke, broj stupaca i broj redaka. Osim toga, može se definirati način slaganja elemenata u matricu, default je slaganje po stupcu, a može se definirati slaganje po retcima unosom **byrow=TRUE**. Podaci se mogu kreirati, a može se koristiti importirani dataset (npr. ako se importirani dataset zove Analiza, tada je data=Analiza, kasnije ćemo više o tome).
+```{r}
+A<-matrix(data=10:18, nrow=3, ncol=3)
+A
+```
+```{r}
+B<-matrix(data=10:18, nrow=3, ncol=3, byrow=TRUE)
+B
+```
+Nazivi stupaca i redaka matrice mogu se unijeti pomoću **dimnames**. 
+```{r}
+C<-list(c("Crveno", "Žuto", "Zeleno"), c("Lokacija 1", "Lokacija 2"))
+matrix(data=c("DA","NE", "N/a"), nrow=3, ncol=2, dimnames = C)
+```
+Matrica se može kreirati i temeljem vektora. Kreirajmo malo duži vektor, na primjer,
+```{r}
+o <-c(a,j)
+o
+```
+```{r}
+length(o)
+```
+Da bi se pretvorio u matricu, potrebno mu je zadati dvije dimenzije, a dimenzije se zadaju pomoću funkcije **dim()**.
+```{r}
+dim(o)<-c(3,5)
+```
+Već pri sljedećem ispisu moguće je uočiti rezultat primjene dim().
+```{r}
+o
+```
+Ako je potrebno, moguće je pridodati atribute, a **nazivi stupaca i redaka** mogu se pridružiti na sljedeći način:
+```{r}
+rownames(o)<-c("Prvi", "Drugi", "Treći")
+colnames(o)<-c("Stupac 1.", "Stupac 2.", "Stupac 3.", "Stupac 4.", "Stupac 5.")
+print(o)
+```
+provjera
+```{r}
+is.matrix(o)
+```
+a moguće je provjeriti i na načine:
+```{r}
+class(o)
+```
+```{r}
+typeof(o)
+```
+Kao i kod vektora, iz matrica je moguće **odabirati elemente** s obzirom na njihovu poziciju.
+```{r}
+A[2,3]
+```
+Pritom **prvi broj označava redak, a drugi stupac**. Tako je 17 element koji pripada drugom retku i trećem stupcu matrice A.
+Ispis matrice moguće je odabrati i s obzirom na retke i stupce. Na primjer, ako se želi odabrati/ ispisati samo prvi redak matrice A, tada je to moguće učiniti na sljedeći način:
+```{r}
+A[1,]
+```
+```{r}
+o[1,]
+```
+Možete uočiti razliku između ispisa prvog retka matrice A kojoj nisu zadani nazivi stupaca i redaka, u odnosu na matricu o, kojoj su zadani nazivi stupaca i redaka.Ipak, uočite i to da imenovanje stupaca i redaka ne utječe na odabir.
+Ako bi koristeći isti izraz upisali, npr o[2,], tada bi rezultat prikazao samo drugi redak. Ako se želi ispisati više redaka, tada je to potrebno definirati npr. ovako:
+```{r}
+o[c(1,2),]
+```
+Slično vrijedi i za stupce, samo će se u tom slučaju prva pozicija prije zareza ostavljati praznom.
+```{r}
+o[,1]
+```
+```{r}
+o[,c(1,2)]
+```
+```{r}
+o[,c(3,5)]
+```
+Slično kao kod vektora, mogu se ispisati elementi **prema zadanom kriteriju**, npr. elementi veći od 10.
+```{r}
+o[o>10]
+```
+Kao što je moguće spajati vektore, tako je moguće **spajati** i matrice. Pritom je potrebno paziti na dimenzije matrica koje se spajaju. Matrice koje se podudaraju u broju redaka mogu se spojiti funkcijom **cbind()**, a matrice koje se podudaraju po broju stupaca funkcijom **rbind()**.
+Ranije kreirane matrice A i B imaju jednak broj stupaca i redaka. Provjerimo koja je razlika ako se primjenjuje spajanje po stupcu i spajanje po retku.
+
+```{r}
+AB<-rbind(A,B)
+AB
+```
+```{r}
+BA<-cbind(A,B)
+BA
+```
+U sljedećem primjeru kombinirati ćemo ranije naučene funkcije. Recimo da se odabirom svakog sedmog elementa iz vektora f želi kreirati vektor p. Nakon provjere duljine vektora, dodjeljuju mu se odgovarajuće dimenzije. Usporedbom s već kreiranim matricama, uočava se da novokreirana matrica ima jednak broj redaka kao matrica o, te se matrice p i o spajaju funkcijom cbind().
+```{r}
+p<-f[seq(1,101,by=7)]
+p
+length(p)
+dim(p)<-c(3,5)
+po<-cbind(o,p)
+po
+```
+Nadalje, jedna od često potrebnih operacija s matricama je **transponiranje, t()** (zamjena redaka i stupaca).
+```{r}
+t(po)
+```
+Matrice podataka s uključenim nazivima stupaca i redaka često su korisnije u obliku podatkovnog okvira, zato jer brojni paketi koriste upravo takvu strukturu podataka. Matrice se lako mogu spremiti u obliku podatkovnog okvira na sljedeći način:
+```{r}
+X<-as.data.frame(po)
+str(X)
+```
+Obratite pozornost na prozor Environment, u kojem se sad pojavio objekt X.
+
+---
+***Kreiranje liste***
+---
+
+Nalik vektorima liste su jednodimenzionalni objekti, ali mogu sadržavati **elemente različitih tipova**, ali mogu uključivati **i druge objekte** (vektore, matrice, druge liste, funkcije i dr., što znači da elementi unutar liste ne moraju biti jednodimenzionalni). Zadaje se funkcijom **list()**. Na primjer,
+```{r}
+lista1 <-list(5, "Pula", a, AB)
+lista1
+```
+Elementi liste naznačeni su *dvostrukim uglatim zagradama* i označavaju poziciju elementa u listi. Dakle, i dalje se radi o **uređenom nizu** i prema poziciji je moguće odabirati elemente.
+```{r}
+lista1[2]
+```
+Elementima liste moguće je pridružiti **nazive**.
+```{r}
+names(lista1)<-c("broj", "grad", "vektor", "matrica")
+lista1
+```
+Elementima liste moguće je pridodati nazive i prilikom kreiranja liste.
+```{r}
+lista2<-list(Drzava="Hrvatska", Grad="Hvar", Selo="Heki", Rijeka="Hudson", Jezero="Hachiro", Opcina="Hum na Sutli", Planina="Hahlići", Zivotinja="Hrcak")
+lista2
+```
+**Odabire** je moguće vršiti putem pozicije elementa i putem naziva.
+```{r}
+lista2[1]
+```
+```{r}
+lista2$Drzava
+```
+```{r}
+lista1$matrica
+```
+```{r}
+lista1$matrica[4,3]
+```
+```{r}
+lista1[[4]][15]
+```
+Ako se želi postojeću listu **proširiti za element**, onda je to moguće učiniti pridruživanjem.
+```{r}
+lista2$Biljka<-"Hren"
+```
+Ako element koji se pridružje nije potrebno imenovati, onda se pridruživanje može izvršiti na sljedeći način:
+```{r}
+lista1[5]<-"50 %"
+```
+Ako se želi **izbrisati element**, onda je to moguće na sljedeći način:
+```{r}
+lista1[[1]]<-NULL
+```
+Nadalje, slično kao što se mogu spajati vektori i matrice, mogu se **spajati** i liste.
+```{r}
+lista3<-list(lista1,lista2)
+lista3
+```
+Alternativno, liste se mogu spojiti i kombiniranjem:
+```{r}
+lista4<-c(lista1,lista2)
+lista4
+```
+**Razdvajanje** liste vrši se pomoću **unlist()**.
+```{r}
+unlist(lista4)
+```
+Funkcija unlist() pretvara listu u vektor, pa je moguće uočiti da su svi elementi matrice zasebno odvojeni. Isprobajte primjenu unlist() na lista3 i usporedite rezultate.
+
+Ako su listi već pridodani **atributi** (nazivi), oni se mogu provjeriti/ ispisati ponoću attributes() ili attr().
+
+```{r}
+attributes(lista2)
+```
+```{r}
+attr(lista1, "names")
+```
+
+---
+***Podatkovni okviri (data frame)***
+---
+
+**Podatkovni okviri (data frame)** su *uređeni dvodimenzionalni skupovi podataka* koji se mogu sastojati od *elemenata različitih tipova*, uz uvjet da se *unutar pojedinog stupca nalaze elementi istog tipa*. 
+Primjer:
+
+```{r, echo=FALSE}
+y <- c("Croatia",	57668.00,	2980.00,
+      "France",	211998.00,	48069.00,
+      "China",	158606.00,	149720.00,
+      "Italy",	93228.60,	 61194.60,
+      "Austria",	30816.00, 11043.00,
+      "Ireland",	10926.00,	8643.00)
+
+Tablica2 <- matrix(y, nrow=6, ncol=3, byrow=TRUE)
+colnames(Tablica2)<-c("Drzava",	"Broj_turistickih_dolazaka", "Broj_turistickih_putovanja_(odlazni)")
+rownames(Tablica2)<-c("1.","2.","3.","4.","5.","6.")
+T2<-as.table(Tablica2)
+T2
+
+```
+Podaci se odnose na zadnje dostupne podatke iz 2018. godine dostupne na mrežnim stranicama World Bank, izraženi u tisućama (https://data.worldbank.org/indicator/ST.INT.ARVL?end=2018&most_recent_value_desc=true&start=1995&type=shaded&view=map&year=2018
+https://data.worldbank.org/indicator/ST.INT.DPRT?end=2018&most_recent_value_desc=true&start=1995&type=shaded&view=map&year=2018).
+Recimo da se ovi podaci žele *zapisati u obliku podatkovnog okvira*. Za to postoji više načina.
+Prvi način:
+```{r}
+y <- c("Croatia",	57668.00,	2980.00,
+      "France",	211998.00,	48069.00,
+      "China",	158606.00,	149720.00,
+      "Italy",	93228.60,	 61194.60,
+      "Austria",	30816.00, 11043.00,
+      "Ireland",	10926.00,	8643.00)
+
+Turisti <- matrix(y, nrow=6, ncol=3, byrow=TRUE)
+colnames(Turisti)<-c("Drzava",	"Broj_turistickih_dolazaka", "Broj_turistickih_putovanja_(odlazni)")
+rownames(Turisti)<-c("1.","2.","3.","4.","5.","6.")
+Turisti1<-as.data.frame(Turisti)
+#s obzirom da su podaci uneseni mješovito s obzirom na tip, ako se broj turističkih dolazaka i odlazaka ne definiraju kao double ili integer, preuzet će tip chr
+Turisti1$`Broj_turistickih_dolazaka`<-as.double(Turisti1$`Broj_turistickih_dolazaka`)
+Turisti1$`Broj_turistickih_putovanja_(odlazni)`<-as.double(Turisti1$`Broj_turistickih_putovanja_(odlazni)`)
+Turisti1
+```
+Drugi način:
+```{r}
+Drzava <- c("Croatia", "France", "China", "Italy", "Austria", "Ireland")
+Br_t_dol<-c(57668, 211998, 158606, 93228,  30816, 10926)
+Br_t_odl<-c(2980, 48069, 14972, 61194, 11043, 8643)
+Turisti2<-data.frame(Drzava, Br_t_dol, Br_t_odl)
+Turisti2
+```
+Treći način:
+```{r}
+D1<-c("Croatia",	57668.00,	2980.00)
+D2<-c("France",	211998.00,	48069.00)
+D3<-c("China",	158606.00,	149720.00)
+D4<-c("Italy",	93228.00,	 61194.60)
+D5<-c("Austria",	30816.00, 11043.00)
+D6<-c("Ireland",	10926.00,	8643.00)
+Tur<-rbind(D1, D2, D3, D4, D5, D6)
+colnames(Tur)<-c("Drzava",	"Broj_turistickih_dolazaka", "Broj_turistickih_putovanja_(odlazni)")
+rownames(Tur)<-c("1.","2.","3.","4.","5.","6.")
+Turisti3<-as.data.frame(Tur)
+#s obzirom da su podaci uneseni mješovito s obzirom na tip, ako se broj turističkih dolazaka i odlazaka ne definiraju kao double ili integer, preuzet će tip chr
+Turisti3$`Broj_turistickih_dolazaka`<-as.double(Turisti3$`Broj_turistickih_dolazaka`)
+Turisti3$`Broj_turistickih_putovanja_(odlazni)`<-as.double(Turisti3$`Broj_turistickih_putovanja_(odlazni)`)
+Turisti3
+```
+Četvrti način:
+```{r}
+Turisti4<-data.frame(Drzava=c("Croatia", "France", "China", "Italy", "Austria", "Ireland"), Br_t_dol=c(57668, 211998, 158606, 93228,  30816, 10926), Br_t_odl=c(2980, 48069, 14972, 61194, 11043, 8643))
+Turisti4
+```
+Može se uočiti da su drugi i četvrti način jednostavniji i brži za primjenu. Poanta ovih primjera je da uočite da je do rješenja moguće doći na različite načine. Dakako, neki od načina bit će elegantniji od drugih, ali važno je uočiti da ne postoji isključivo "jedan način na koji se nešto radi". Igrajte se, isprobavajte i otkrijte svoj stil.
+
+Već je pri unosu podataka u data frame na prvi i treći način primijenjen jedan oblik **odabira**. Prije nego se pozabavimo odabirima, pogledajmo što čini data frame.
+```{r}
+str(Turisti1)
+```
+Funkcija **str()** daje uvid u data frame, tj. podatkovni okvir. Ovaj podatkovni ovir sastoji se od 6 opažanja za svaku od 3 varijable. Navedene su varijable, tip varijabli i ispis prvih nekoliko elemenata (slično zapisu u prozoru Environment). Dakle, data frame je uređen varijablama i brojem opažanja. Varijable su zapisane u stupcima, a opažanja po retcima. Dakle, ako se podatkovni okvir pretražuje prema elementima, npr. [1,2], tada će odabrani element biti prvo opažanje pripisano drugoj varijabli. Osim toga, češće se ispituje pojedina varijabla. Promotrimo to kroz nekoliko načina **odabiranja elemenata** iz data framea.
+```{r}
+Turisti1$Drzava
+```
+```{r}
+Turisti1$Drzava[3]
+```
+```{r}
+Turisti1[1,2]
+```
+```{r}
+Turisti[2,1]
+```
+```{r}
+Turisti1["Drzava"]
+```
+```{r}
+Turisti1[2,]
+```
+```{r}
+Turisti1[,2]
+```
+Ponekad je za daljnju analizu potreban **podskup podataka**, što se postiže funkcijom **subset()**. Na primjer, recimo da nas zanimaju samo one države koje su zabilježile više od 30 000 dolazaka turista.
+```{r}
+Tur_sub <- subset(Turisti1, Turisti1$`Broj_turistickih_dolazaka`>30000)
+Tur_sub
+```
+Ili, na primjer, ako nas zanimaju sve države osim Hrvatske, onda će to izgledati ovako:
+```{r}
+Tur_noCro<-subset(Turisti1, Drzava != "Croatia")
+Tur_noCro
+```
+Subset je moguće napraviti prema bilo kojem kriteriju kojeg je moguće zadati temeljem postojećih podataka. U nekim situacijama postojeći podaci neće biti dovoljni za potrebe analize i to će iziskivati dodavanje elemenata i/ili varijabli. Za početak, pozabavimo se **dodavanjem elemenata** u dataset.
+```{r}
+USA <-data.frame(Drzava="United States", Br_t_dol=169324.92, Br_t_odl= 157873.00)
+Turisti2<-rbind(Turisti2, USA)
+Turisti2
+```
+Recimo da se za potrebe daljnje analize želi izvršiti subset Europskih država. Iako je nama lako odrediti koje države pripadaju Europi, a koje drugim kontinentima, R-u je potrebno dodati podatke koji će sadržavati potrebne karakteristike. Jedan od načina je pridodavanje kontinenta svakom opažanju, a drugi je dodavanje elemenata logičkog tipa u obliku zasebne varijable. Ovdje će se iskoristiti drugi pristup. Sličan pristup može se, općenito primijeniti pri ručnom upisu i **dodavanju varijable** postojećem data frameu.
+
+```{r}
+EU<-c(TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,FALSE)
+Turisti2<-cbind(Turisti2,EU)
+Turisti2
+```
+```{r}
+Tur_eu<-subset(Turisti2, EU==TRUE)
+Tur_eu
+```
+Iako je dobiven podskup prema traženom kriteriju, može se uočiti da su nazivi redaka ostali isti kao ranije. 
+
+Ako se elementi u data frameu žele redosljedno urediti prema vrijednostima pojedine varijable, tada se vrši **sortiranje**, koje se najčešće vrši pomoću funkcije **order()** i **uglatih zagrada**.
+
+```{r}
+Turisti2[order(Br_t_dol),]
+```
+Prethodni je ispis rezultirao poredanim prikazom podataka iz data framea Turisti2.Ako bi htjeli provjeriti **kako data frame izgleda** nakon primjene ove funkcije, to možemo učiniti koristeći **str()**, **head()** ili **tail()**.
+```{r}
+str(Turisti2)
+```
+```{r}
+head(Turisti2)
+```
+funkcija **head()** prikazuje prvih 6 redaka data framea po defaultu, a taj se broj može promijeniti, na primjer:
+```{r}
+head(Turisti2, 7)
+```
+Funkcija **tail()** prikazuje posljednjih 6 redaka data framea, a može se podesiti i drugačiji broj redaka ovisno o potrebama.
+```{r}
+tail(Turisti2)
+```
+Ono što se može uočiti iz **pregleda data framea** jest da nije došlo do promjene u poretku. Da bi promjena u poretku bila evidentirana, potrebno je kreirati novi data frame.
+```{r}
+Tur_ord<-Turisti2[order(Br_t_dol),]
+```
+Funkcija sort() ne primijenjuje se na data frameu, nego na vektorima, tako da ovdje nije od koristi.
+
+```{r}
+Turisti2[order(Drzava),]
+```
+Obratite pozornost na to da je order() moguće primijeniti i na elementima tipa character. Nadalje, funkcija order() će uvijek soritirati vrijednosti silazno, ako drugačije nije navedeno. Redoslijed prema kriteriju uzlaznog povećavanja vrijednosti elemenata moguće je zadati:
+```{r}
+Turisti2[order(Br_t_odl, decreasing = TRUE),]
+```
+Nadalje, tijekom pripreme podataka za analizu može se pojaviti potreba za **brisanje**m elemenata, opažanja ili varijabli. 
+**Brisanje elementa** zapravo se vrši putem zamjene elementa s oznakom za nedostupnu vrijednost (Not Available/Missing Values), koja predstavlja logičku konstantu duljine 1, a R ju tumači kao indikator nepostojeće vrijednosti.
+```{r}
+Turisti2[5,4]<-NA
+Turisti2
+```
+Brisanje stupca:
+```{r}
+Turisti2$EU<-NULL
+Turisti2
+```
+Napomena: Izmjene vezane za dodavanje i brisanje elemenata direktno utječu na postojeći dataset, bez da je potrebno kreirati novi objekt.
+
+Drugi način odnosi se na prikaz bez pojedinog stupca i tehnički taj stupac neće biti obrisan, samo neće biti prikazan.
+```{r}
+Turisti2[-2]
+```
+Da bi se stupac izbrisao koristeći ovaj pristup, potrebno je kreirati novi objekt:
+```{r}
+Tur_odl<-Turisti2[-2]
+```
+Na sličan način, mogu se brisati retci ili samo ukloniti iz prikaza.
+```{r}
+Tur0<-Turisti1[-1,]
+Tur0
+```
+Također, moguće je ukloniti više opažanja istovremeno, navodeći pripadajuće retke na prvom mjestu unutar uglatih zagrada, koristeći funkciju combine.
+
+```{r}
+Tur_noEU<-Turisti2[-c(1,2,4,5,6),]
+Tur_noEU
+```
+Osim toga, moguće je izvršiti i kombinaciju pretraživanja po varijablama i zamjenu elementa, na primjer:
+```{r}
+#Za Br_t_dol Francuske, želi se zamijeniti postojeća vrijednost s NA
+Turisti2$Br_t_dol[Turisti2$Drzava=="France"]<-NA
+Turisti2
+```
+Iako u ovako jednostavnim primjerima, ovakav pristup djeluje suvišno, u zahtjevnijim datasetovima koji broje tisuće elemenata, ovaj je pristup često učinkovitiji.
+
+Postoje neki podatkovni okviri koji su već uključeni u R, a brojni su uključeni u različite pakete. Jedan od češće korištenih podatkovnih okvira za vježbu i primjere je iris. data frame iris sadrži opažanja o duljini i širini latica za tri vrste cvijeća iris (Iris setosa, versicolor i virginica). U spomenutom data frameu postoji 150 opažanja (redaka) i 5 varijabli (stupaca), s nazivima: Sepal.Length, Sepal.Width, Petal.Length, Petal.Width, i Species. Data frame koji je sadržan u r-u ili nekom od već instaliranih paketa može se pozvati na sljedeći način:
+```{r}
+data("iris")
+```
+Prvo, nakon što upišete data i otvorite zagradu, nudi se izbor dostupnih podatkovnih okvira. Drugo, ako vas zanimaju detalji o pojedinom podatkovnom okviru, potrebno je naziv upisati u tražilicu u prozoru Help (donji desni prozor).
+Provjerimo kako dataset izgleda.
+```{r}
+str(iris)
+```
+```{r}
+head(iris,5)
+```
+Ako ne želimo stalno koristiti operator $ u kombinaciji s nazivom data framea, korisna je funkcija **attach()**. Ta će funkcija pridružiti data frame R-ovom putu traženja, što omogućuje pozivanje varijabli putem imena.
+```{r}
+attach(iris)
+```
+Izračunajte nekoliko jednostavnih pokazatelja.
+```{r}
+mean(Sepal.Length)
+```
+```{r}
+fivenum(Sepal.Width)
+```
+Podatkovni okvir je najčešće korištena struktura pri analizi podataka. Uvozom podataka iz .csv i xlsx datoteka bavit ćemo se u sljedećoj lekcji.
+
+Za sad, promotrimo mogućnosti kreiranja tablice. Iako se čitav data frame može pretvoriti u tablicu (koristeći **as.table()**), to nije naročito korisno. Češće će biti korisno izolirati elemente koji se žele prikazati u tablici.
+```{r}
+table(iris$Species)
+```
+```{r}
+table(Sepal.Length, Species)
+```
+Iskoristimo prethodno kreiran data frame za drugačiji prikaz.
+```{r}
+table(Turisti2$Drzava)
+```
+```{r}
+table(Turisti2$Drzava,Turisti2$Br_t_dol)
+```
+Dakle, možete uočiti kroz ovih nekoliko primjera da funkcija **table()** koristi zadane varijable kao zaglavlja i predstupce, dok elementi tablice predstavljaju apsolutne frekvencije. U nekim će situacijama biti vrlo korisno koristiti tablice, osobito za kvalitativne varijable.
+
+Postoji još jedna vrsta podataka s kojom je potrebno upoznati se (ili podsjetiti se) u uvodnom dijelu.
+
+---
+***Kreiranje faktora***
+---
+
+Faktori predstavljaju **kvalitativne varijable** (opisne i stupnjevite, mjerene na nominalnoj i ordinalnoj ljestvici), a sastoje se od određenog broja levela (razina; poprimaju konačan broj unaprijed definiranih vrijednosti). Leveli ili razine mogu se uraditi na način da postoji poredak. U nekim izvorima naići ćete da se faktor tretira kao tip podataka, ali je pravilnije o njima razmišljati kao o vrsti varijabli. Kreiraju se pomoću funkcije **factor()**. Elemente je moguće kombinirati putem c(), a moguće je i vektore pretvoriti u faktore.
+
+
+```{r}
+Faktor1<-factor(c("Plava", "Crvena", "Zelena", "Crna"))
+Faktor1
+```
+```{r}
+Faktor2<-factor(d)
+Faktor2
+```
+U navedena dva primjera radi se o nominalnim varijablama, kod kojih poredak nije moguće utvrditi. Za stupnjevite varijable, kao što je, na primjer, završena razina obrazovanja,  moguće je utvrditi poredak, a isti može biti relevantan pri daljnjim analizama. U takvom slučaju, faktor se može zadati na sljedeći način:
+```{r}
+r<-c(1,2,3)
+Faktor3<-factor(c("Osnovna škola","Srednja škola","Fakutet"), ordered=is.ordered(r))
+Faktor3
+```
+Ako se pri zadavanju vektora doda ordered=TRUE, tada će elementi biti poredani po abecedi ili po veličini.
+```{r}
+Faktor4<-factor(a, ordered = TRUE)
+Faktor4
+```
+Ako se faktor želi prebaciti natrag u numerički tip varijable, to je moguće učiniti:
+```{r}
+num<-as.numeric(Faktor4)
+num
+```
+Isto bi funkcioniralo i da je upotrijebljena funkcija as.double(), odnosno za cjelobrojne vrijednosti as.integer, ili as.character() za znakovne elemente. Provjera:
+```{r}
+typeof(num)
+```
+Još nekoliko primjera.
+```{r}
+chr<-as.character(Faktor3)
+chr
+```
+```{r}
+#obratite pozornost na ovaj primjer
+Faktor6<-factor(h)
+Faktor6
+```
+```{r}
+num2<-as.numeric(Faktor6)
+num2
+```
+U ovom primjeru može se uočiti da je pretvorbom u numeričku varijablu zapravo sačuvan niz rednih mjesta levela Faktor6. To znači da je potrebno napraviti dodatnu promjenu, prvo u znakovni tip, a onda u numerički tip varijable.
+```{r}
+num2<-as.numeric(as.character(Faktor6))
+num2
+```
+Iz ovog primjera može se uočiti da je izuzetno važno provjeriti rezultat nakon svake izvršene promjene, osobito u početku dok još niste u potpunosti sigurni čemu služi koja funkcija.
+
+Moguće je i pojedinu varijablu data framea pretvoriti u faktor.
+```{r}
+Drzave<-as.factor(Turisti2$Drzava)
+Drzave
+```
+
+Dodavanje razina postojećem faktoru:
+```{r}
+levels(Faktor3)<-c(levels(Faktor3), "Doktorat")
+Faktor3
+```
+
+---
+*Zadaci za vježbu*
+---
+
+Otvorite novi R Script dokument.
+1. Kreirajte vektor *z* koji će sadržavati sve parne brojeve između 50 i 100.
+2. Provjerite tip *z*-a.
+3. Izračunajte prosjek vrijednosti varijable *z*.
+4. Kreirajte data frame prema podacima iz tablice na 32. stranici u *Statističkim informacijama* https://www.dzs.hr/Hrv_Eng/StatInfo/pdf/StatInfo2021.pdf
+5. Pretvorite data frame iz prošlog zadatka u tablicu.
+
+6. Kreirajte vektor temeljem podataka iz Tablice na 33. stranici *Statističkih informacija*, na način da koristite samo opažanja iz 2020. godine za minimalno šest varijabli. 
+7. Kreirajte vektor temeljem podataka iz Tablice na 33. stranici *Statističkih informacija*, na način da koristite samo opažanja iz 2019. godine za iste varijable koje ste odabrali u prethodnom zadatku.
+8. Vektorima iz 5. i 6. zadatka pridružite nazive.
+9. Spojite vektore iz 5. i 6. zadatka.
+10. Vektor iz prethodnog zadatka pretvorite u matricu.
+11. Matrici iz prethodnog zadatka pridodajte opažanja iz 2018., za iste varijable, iz istog izvora podataka.
+12. Matricu pretvorite u data frame.
+13. Iz data frame-a obrišite jedan podatak iz 2018. godine.
+14. Iz data framea obrišite jednu, proizvoljno odabranu, varijablu.
+15. Izračunajte nekoliko statističkih pokazatelja za preostale varijable .
+
+16. Je li moguće spojiti dva data framea koja ste kreirali? Obrazložite odgovor.
+17. Ako vas zanima udio nezaposlenih žena prema razinama obrazovanja, na koji način možete sortirati/filtrirati data frame?
+
+18. Na stranici 36. *Statističkih informacija* pogledajte dio podataka pod nazivom *Upisani studenti*. Na koje je sve načine moguće podatke zapisati u R-u? O kakvim se podacima radi? Što su opažanja, a što su varijable? 
+19. Na stranici 53 istog dokumenta, nalazi se tablica "BRUTO DOMAĆI PROIZVOD REPUBLIKE HRVATSKE." Razmislite o kakvim se podacima radi, što su varijable, a što opažanja i na koji bi način bilo potrebno upisati podatke u R da se kreira data frame
+20. Ako niste ranije, bilo bi dobro sad proći sve primjere naredbi u ovom dokumentu. Osobitu pozornost posvetite onim funkcijama koje su vam nejasne i ne zaboravite koristiti prozor Help. Ako i nakon toga imate poteškoće, javite se za konzultacije ili pitajte na početku sljedećeg sata.
+
+
+I nemojte zaboraviti, na kraju rada spremiti projekt/ skriptu...
