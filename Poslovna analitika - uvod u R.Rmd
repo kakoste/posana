@@ -2,6 +2,7 @@
 title: "Poslovna analitika - uvod u Rstudio"
 author: Katarina Kostelić
 date: 12/2021
+markdown:kramdown
 output:
   pdf_document: default
   html_document: default
